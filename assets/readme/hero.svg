@@ -21,8 +21,8 @@
   <g id="title-block" transform="translate(56 48)">
 
     <!-- Category pill -->
-    <rect x="0" y="0" width="130" height="28" rx="6" fill="#58a6ff" fill-opacity="0.12" stroke="#58a6ff" stroke-width="1" stroke-opacity="0.3"/>
-    <text x="65" y="19" text-anchor="middle" fill="#58a6ff" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,PingFang SC,sans-serif" font-size="11" font-weight="600" letter-spacing="1.2">AI AGENT TOOL</text>
+    <rect x="0" y="0" width="130" height="28" rx="6" fill="#88C0D0" fill-opacity="0.12" stroke="#88C0D0" stroke-width="1" stroke-opacity="0.3"/>
+    <text x="65" y="19" text-anchor="middle" fill="#88C0D0" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,PingFang SC,sans-serif" font-size="11" font-weight="600" letter-spacing="1.2">AI AGENT TOOL</text>
 
     <!-- Project name -->
     <text x="0" y="72" fill="#f0f6fc" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="44" font-weight="700">search_one_skill</text>
@@ -30,9 +30,9 @@
     <!-- One-line value -->
     <text x="0" y="112" fill="#8b949e" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,PingFang SC,sans-serif" font-size="17" font-weight="400">
       <tspan x="0" dy="0">Search and install AI Agent skills from</tspan>
-      <tspan fill="#58a6ff" font-weight="500"> GitHub</tspan>
+      <tspan fill="#88C0D0" font-weight="500"> GitHub</tspan>
       <tspan> and</tspan>
-      <tspan fill="#3fb950" font-weight="500"> SkillHub</tspan>
+      <tspan fill="#A3BE8C" font-weight="500"> SkillHub</tspan>
       <tspan> — directly inside your conversation</tspan>
     </text>
 
@@ -62,7 +62,7 @@
 
     <!-- Search input -->
     <rect x="0" y="0" width="220" height="42" rx="8" fill="#161b22" stroke="#30363d" stroke-width="1.5"/>
-    <text x="16" y="26" fill="#58a6ff" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="14">
+    <text x="16" y="26" fill="#88C0D0" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="14">
       <tspan fill="#8b949e">🔍 search "</tspan>
       <tspan fill="#f0f6fc">Amazon ads</tspan>
       <tspan fill="#8b949e">"</tspan>
@@ -74,10 +74,10 @@
 
     <!-- GitHub pipeline -->
     <g transform="translate(0 80)">
-      <rect x="0" y="0" width="210" height="82" rx="10" fill="#161b22" stroke="#58a6ff" stroke-width="1.2" stroke-opacity="0.35"/>
-      <rect x="0" y="0" width="210" height="28" rx="10" fill="#58a6ff" fill-opacity="0.08"/>
-      <rect x="0" y="18" width="210" height="10" fill="#58a6ff" fill-opacity="0.08"/>
-      <text x="12" y="19" fill="#58a6ff" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,PingFang SC,sans-serif" font-size="12" font-weight="600">GitHub API</text>
+      <rect x="0" y="0" width="210" height="82" rx="10" fill="#161b22" stroke="#88C0D0" stroke-width="1.2" stroke-opacity="0.35"/>
+      <rect x="0" y="0" width="210" height="28" rx="10" fill="#88C0D0" fill-opacity="0.08"/>
+      <rect x="0" y="18" width="210" height="10" fill="#88C0D0" fill-opacity="0.08"/>
+      <text x="12" y="19" fill="#88C0D0" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,PingFang SC,sans-serif" font-size="12" font-weight="600">GitHub API</text>
       <text x="12" y="46" fill="#c9d1d9" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="11">
         <tspan>topic:skill + keyword</tspan>
       </text>
@@ -86,10 +86,10 @@
 
     <!-- SkillHub pipeline -->
     <g transform="translate(0 172)">
-      <rect x="0" y="0" width="210" height="82" rx="10" fill="#161b22" stroke="#3fb950" stroke-width="1.2" stroke-opacity="0.35"/>
-      <rect x="0" y="0" width="210" height="28" rx="10" fill="#3fb950" fill-opacity="0.08"/>
-      <rect x="0" y="18" width="210" height="10" fill="#3fb950" fill-opacity="0.08"/>
-      <text x="12" y="19" fill="#3fb950" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,PingFang SC,sans-serif" font-size="12" font-weight="600">SkillHub CLI</text>
+      <rect x="0" y="0" width="210" height="82" rx="10" fill="#161b22" stroke="#A3BE8C" stroke-width="1.2" stroke-opacity="0.35"/>
+      <rect x="0" y="0" width="210" height="28" rx="10" fill="#A3BE8C" fill-opacity="0.08"/>
+      <rect x="0" y="18" width="210" height="10" fill="#A3BE8C" fill-opacity="0.08"/>
+      <text x="12" y="19" fill="#A3BE8C" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,PingFang SC,sans-serif" font-size="12" font-weight="600">SkillHub CLI</text>
       <text x="12" y="46" fill="#c9d1d9" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="11">
         <tspan>skillhub search --json</tspan>
       </text>
@@ -97,8 +97,8 @@
     </g>
 
     <!-- Down arrows from pipes to merge -->
-    <path d="M105 162 L105 178" stroke="#58a6ff" stroke-width="1.5" fill="none" stroke-opacity="0.5"/>
-    <path d="M105 254 L105 270" stroke="#3fb950" stroke-width="1.5" fill="none" stroke-opacity="0.5"/>
+    <path d="M105 162 L105 178" stroke="#88C0D0" stroke-width="1.5" fill="none" stroke-opacity="0.5"/>
+    <path d="M105 254 L105 270" stroke="#A3BE8C" stroke-width="1.5" fill="none" stroke-opacity="0.5"/>
 
     <!-- Merge node -->
     <g transform="translate(0 278)">
