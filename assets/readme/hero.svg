@@ -1,0 +1,114 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     width="1200" height="360" viewBox="0 0 1200 360"
+     role="img" aria-labelledby="title desc">
+  <title id="title">search_one_skill — AI Agent Skill search and install workflow</title>
+  <desc id="desc">Dual-source search across GitHub and SkillHub with one-command install for AI Agent skills.</desc>
+
+  <defs/>
+
+
+  <!-- Background -->
+  <rect width="1200" height="360" rx="24" fill="#0d1117"/>
+
+  <!-- Subtle grid texture -->
+  <g opacity="0.04">
+    <line x1="0" y1="90" x2="1200" y2="90" stroke="#c9d1d9" stroke-width="0.5"/>
+    <line x1="0" y1="180" x2="1200" y2="180" stroke="#c9d1d9" stroke-width="0.5"/>
+    <line x1="0" y1="270" x2="1200" y2="270" stroke="#c9d1d9" stroke-width="0.5"/>
+  </g>
+
+  <!-- ═══════════ LEFT: Title Block ═══════════ -->
+  <g id="title-block" transform="translate(56 48)">
+
+    <!-- Category pill -->
+    <rect x="0" y="0" width="130" height="28" rx="6" fill="#58a6ff" fill-opacity="0.12" stroke="#58a6ff" stroke-width="1" stroke-opacity="0.3"/>
+    <text x="65" y="19" text-anchor="middle" fill="#58a6ff" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,PingFang SC,sans-serif" font-size="11" font-weight="600" letter-spacing="1.2">AI AGENT TOOL</text>
+
+    <!-- Project name -->
+    <text x="0" y="72" fill="#f0f6fc" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="44" font-weight="700">search_one_skill</text>
+
+    <!-- One-line value -->
+    <text x="0" y="112" fill="#8b949e" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,PingFang SC,sans-serif" font-size="17" font-weight="400">
+      <tspan x="0" dy="0">Search and install AI Agent skills from</tspan>
+      <tspan fill="#58a6ff" font-weight="500"> GitHub</tspan>
+      <tspan> and</tspan>
+      <tspan fill="#3fb950" font-weight="500"> SkillHub</tspan>
+      <tspan> — directly inside your conversation</tspan>
+    </text>
+
+    <!-- Metadata row -->
+    <g transform="translate(0 148)">
+      <rect x="0" y="0" width="52" height="22" rx="4" fill="#30363d"/>
+      <text x="26" y="15" text-anchor="middle" fill="#8b949e" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,PingFang SC,sans-serif" font-size="11" font-weight="500">Python</text>
+
+      <rect x="60" y="0" width="38" height="22" rx="4" fill="#30363d"/>
+      <text x="79" y="15" text-anchor="middle" fill="#8b949e" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,PingFang SC,sans-serif" font-size="11" font-weight="500">MIT</text>
+
+      <text x="112" y="15" fill="#484f58" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,PingFang SC,sans-serif" font-size="11">· 2 sources · 2 scripts · 0 deps</text>
+    </g>
+
+    <!-- Quick install command preview -->
+    <g transform="translate(0 196)">
+      <rect x="0" y="0" width="560" height="36" rx="8" fill="#161b22" stroke="#30363d" stroke-width="1"/>
+      <text x="16" y="23" fill="#8b949e" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="13">
+        <tspan fill="#8b949e">$</tspan>
+        <tspan fill="#f0f6fc"> git clone https://github.com/lishiyu7/search_one_skill.git</tspan>
+      </text>
+    </g>
+  </g>
+
+  <!-- ═══════════ RIGHT: Dual-Source Pipeline Diagram ═══════════ -->
+  <g id="proof-block" transform="translate(700 48)">
+
+    <!-- Search input -->
+    <rect x="0" y="0" width="220" height="42" rx="8" fill="#161b22" stroke="#30363d" stroke-width="1.5"/>
+    <text x="16" y="26" fill="#58a6ff" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="14">
+      <tspan fill="#8b949e">🔍 search "</tspan>
+      <tspan fill="#f0f6fc">Amazon ads</tspan>
+      <tspan fill="#8b949e">"</tspan>
+    </text>
+
+    <!-- Fork line from search to two pipes -->
+    <path d="M110 42 L110 62 Q110 72 120 72 L180 72" stroke="#8b949e" stroke-width="1.5" fill="none" stroke-opacity="0.4"/>
+    <path d="M110 42 L110 62 Q110 72 100 72 L40 72" stroke="#8b949e" stroke-width="1.5" fill="none" stroke-opacity="0.4"/>
+
+    <!-- GitHub pipeline -->
+    <g transform="translate(0 80)">
+      <rect x="0" y="0" width="210" height="82" rx="10" fill="#161b22" stroke="#58a6ff" stroke-width="1.2" stroke-opacity="0.35"/>
+      <rect x="0" y="0" width="210" height="28" rx="10" fill="#58a6ff" fill-opacity="0.08"/>
+      <rect x="0" y="18" width="210" height="10" fill="#58a6ff" fill-opacity="0.08"/>
+      <text x="12" y="19" fill="#58a6ff" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,PingFang SC,sans-serif" font-size="12" font-weight="600">GitHub API</text>
+      <text x="12" y="46" fill="#c9d1d9" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="11">
+        <tspan>topic:skill + keyword</tspan>
+      </text>
+      <text x="12" y="66" fill="#484f58" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="10">sort by stars · log-scale score</text>
+    </g>
+
+    <!-- SkillHub pipeline -->
+    <g transform="translate(0 172)">
+      <rect x="0" y="0" width="210" height="82" rx="10" fill="#161b22" stroke="#3fb950" stroke-width="1.2" stroke-opacity="0.35"/>
+      <rect x="0" y="0" width="210" height="28" rx="10" fill="#3fb950" fill-opacity="0.08"/>
+      <rect x="0" y="18" width="210" height="10" fill="#3fb950" fill-opacity="0.08"/>
+      <text x="12" y="19" fill="#3fb950" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,PingFang SC,sans-serif" font-size="12" font-weight="600">SkillHub CLI</text>
+      <text x="12" y="46" fill="#c9d1d9" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="11">
+        <tspan>skillhub search --json</tspan>
+      </text>
+      <text x="12" y="66" fill="#484f58" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="10">optional · silent fallback on miss</text>
+    </g>
+
+    <!-- Down arrows from pipes to merge -->
+    <path d="M105 162 L105 178" stroke="#58a6ff" stroke-width="1.5" fill="none" stroke-opacity="0.5"/>
+    <path d="M105 254 L105 270" stroke="#3fb950" stroke-width="1.5" fill="none" stroke-opacity="0.5"/>
+
+    <!-- Merge node -->
+    <g transform="translate(0 278)">
+      <rect x="0" y="0" width="210" height="36" rx="8" fill="#1c2128" stroke="#8b949e" stroke-width="1" stroke-opacity="0.3" stroke-dasharray="4 3"/>
+      <text x="105" y="22" text-anchor="middle" fill="#8b949e" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,PingFang SC,sans-serif" font-size="12" font-weight="500">merge · sort · TOP 5</text>
+    </g>
+  </g>
+
+  <!-- Dashed connector: merge → result badge -->
+  <g opacity="0.3">
+    <line x1="805" y1="326" x2="805" y2="340" stroke="#8b949e" stroke-width="1.5" stroke-dasharray="3 3"/>
+  </g>
+</svg>
