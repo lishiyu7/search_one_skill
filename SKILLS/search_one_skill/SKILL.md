@@ -9,6 +9,8 @@ description: Use when the user wants to find, search, or discover agent skills m
 
 双源 skill 发现与安装工作流：同时搜索 GitHub 和 SkillHub，按相关性排序取 TOP 5，用户确认后安装。核心原则：**多关键词覆盖、先搜后装、用户确认、本地检查、翻译优先。**
 
+**语言匹配规则：所有面向用户的输出（推荐表格、提示信息、错误消息、确认语句）必须匹配用户使用的语言。用户说中文则中文输出，用户说英文则英文输出。**
+
 ## When to Use
 
 **触发场景：**
@@ -123,7 +125,7 @@ description: Use when the user wants to find, search, or discover agent skills m
 
 - 输出 **TOP 5**：按 score 从高到低推荐，最多 5 个（不足就少输出）
 - 0 条结果时告知用户：**"没有找到完全匹配的 skill，建议换个关键词或更简短的描述再试一次。"**
-- 展示格式：`# | Skill | 推荐理由`（仅此三列，**不要自行添加额外信息**）
+- 展示格式：`# | Skill | 推荐理由`（中文用户）或 `# | Skill | Why Recommended`（英文用户）。仅此三列，**不要自行添加额外信息**
 - 推荐理由：结合 description 字段和 stars（GitHub 源）汇总
 - **最优推荐**：返回结果的第 1 条即为最优推荐，已由脚本按 score 排序，直接推荐即可。**不要自行重新分析或排序**，不要添加"综合你的需求，我比较推荐 XXX"等自行分析的结论
 
@@ -142,6 +144,19 @@ description: Use when the user wants to find, search, or discover agent skills m
 最优推荐是 #1 {name}（{reason}）。你想安装哪一个？告诉我编号或名字就行。
 ```
 
+**英文模板（用户说英文时使用）：**
+
+```
+Here are the matching skills I found:
+
+| # | Skill | Why Recommended |
+|---|-------|-----------------|
+| 1 | {name} | {reason} |
+| 2 | {name} | {reason} |
+
+The top recommendation is #1 {name} ({reason}). Which one would you like to install? Tell me the number or name.
+```
+
 ### 1.8 异常处理
 
 > 脚本执行出错或返回非零退出码时，**禁止**将原始错误信息直接展示给用户，需按以下规则处理：
@@ -152,6 +167,15 @@ description: Use when the user wants to find, search, or discover agent skills m
 | 所有源均失败         | 退出码 2 或 stderr 含 `ALL_SOURCES_FAILED` | 告知用户稍后重试         | "搜索服务暂时不可用，请稍后再试。"                                                                          |
 | 返回 0 条结果        | stdout 为 `[]`                             | 告知用户换描述重试       | "没有找到完全匹配的 skill，建议换个关键词或更简短的描述再试一次。"                                          |
 | 脚本执行报错（其他） | 非零退出码                                 | 翻译为用户友好的中文提示 | "搜索服务遇到了一点问题，建议稍后重试。如持续出现，可反馈给 skill 作者。"                                   |
+
+**英文错误消息（用户说英文时使用）：**
+
+| 异常场景             | 英文输出                                                                                                                     |
+| -------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| GitHub 限流          | "GitHub API rate limit reached (60 req/hr anonymous). Set the `GITHUB_TOKEN` environment variable for 5,000 req/hr, or try again later." |
+| 所有源均失败         | "Search service is temporarily unavailable. Please try again later."                                                         |
+| 返回 0 条结果        | "No matching skills found. Try different keywords or a shorter description."                                                  |
+| 脚本执行报错（其他） | "The search service encountered an issue. Please try again later. If this persists, report it to the skill author."            |
 
 ### 1.9 GitHub Token 配置
 
@@ -167,6 +191,16 @@ GitHub API 请求次数已达上限（匿名 60 次/小时）。
 
 > 日常使用中 60 次/小时足够，仅在触发限流时才提示。**不要主动检查或要求用户预先设置。**
 
+**英文提示（用户说英文时）：**
+
+```
+GitHub API rate limit reached (60 req/hr anonymous).
+Set the GITHUB_TOKEN environment variable for 5,000 req/hr.
+
+How to get one: GitHub → Settings → Developer settings → Personal access tokens → Generate new token (no permissions needed).
+How to set: export GITHUB_TOKEN=<your-token>
+```
+
 ---
 
 ## Step 2：决策 + 下载安装
@@ -175,15 +209,15 @@ GitHub API 请求次数已达上限（匿名 60 次/小时）。
 
 当用户通过以下方式确认时，进入安装流程：
 
-- **说编号**：如 "1""第一个"
-- **说名称**：如 "装 resume-builder"
-- **说意图**：如 "安装""装这个""就它了""用这个"
+- **说编号**：如 "1""第一个"（英文： "1" "the first one"）
+- **说名称**：如 "装 resume-builder"（英文： "install resume-builder"）
+- **说意图**：如 "安装""装这个""就它了""用这个"（英文： "install" "this one" "let's go with this" "use this"）
 
 ### 2.2 本地检查
 
 检查 `{skills_dir}/{name}/SKILL.md` 是否存在（`{skills_dir}` 为当前 Agent 的 skills 目录，`{name}` 为用户选择的 skill 名称（即 GitHub 仓库名））。
 
-- **已安装**：告知用户 **"该 skill 已安装，无需重复安装，是否直接运行？"**
+- **已安装**：告知用户 **"该 skill 已安装，无需重复安装，是否直接运行？"**（英文： **"This skill is already installed. Would you like to run it directly?"**）
 - **未安装**：执行安装流程
 
 ### 2.3 执行安装
@@ -215,6 +249,14 @@ GitHub API 请求次数已达上限（匿名 60 次/小时）。
 | `SUCCESS:`           | 安装成功                       | "{name} 已安装成功。要用这个来完成你的任务吗？"                      |
 | `ALREADY_INSTALLED:` | 已安装（本地 SKILL.md 已存在） | "该 skill 已安装，无需重复安装，是否直接运行？"                      |
 | `ERROR:`             | 安装失败                       | "{name} 安装失败，原因：{描述}。建议稍后重试，或换一个 skill 试试。" |
+
+**英文安装结果（用户说英文时）：**
+
+| stdout 前缀          | Status                       | Agent output                                                                                   |
+| -------------------- | ---------------------------- | ---------------------------------------------------------------------------------------------- |
+| `SUCCESS:`           | Installed                    | "{name} has been installed successfully. Would you like to use it for your task?"              |
+| `ALREADY_INSTALLED:` | Already installed            | "This skill is already installed. Would you like to run it directly?"                          |
+| `ERROR:`             | Installation failed          | "{name} installation failed: {reason}. Please try again later, or try a different skill."      |
 
 ---
 
@@ -255,6 +297,25 @@ python3 {skill_dir}/scripts/skill_search.py "cv generator" --agent-type claude
 最优推荐是 #1 resume-jd-optimizer-cn（JD 驱动中文简历优化，⭐135）。你想安装哪一个？告诉我编号或名字就行。
 
 **用户**：1 → Agent 确认本地未安装 → 执行安装
+
+**英文示例：**
+
+**User**: find me a skill for writing resumes
+
+**Agent**: translates + diverges → `"resume builder"`, `"resume optimizer chinese"`, `"cv generator"`; searches in parallel; merges & deduplicates
+
+**Agent outputs**:
+
+Here are the matching skills I found:
+
+| #   | Skill               | Why Recommended                                                                   |
+| --- | ------------------- | --------------------------------------------------------------------------------- |
+| 1   | resume-builder      | Smart resume generator with multi-template support, keyword optimization, ATS-friendly ⭐234 |
+| 2   | cover-letter-writer | Auto-generates cover letters tailored to job descriptions                         |
+
+The top recommendation is #1 resume-builder (Smart resume generator, ⭐234). Which one would you like to install? Tell me the number or name.
+
+**User**: 1 → Agent confirms not installed → installs → "resume-builder has been installed successfully. Would you like to use it for your task?"
 
 ---
 

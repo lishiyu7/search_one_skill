@@ -41,6 +41,8 @@ Agent：（翻译 → 搜索 → 返回 TOP 5）
 Agent：SUCCESS: resume-builder 已安装 ✓
 ```
 
+→ [查看完整的多关键词搜索示例](./assets/readme/example.md)
+
 ## 工作原理
 
 两个 Python 脚本，零 npm 依赖。
@@ -85,7 +87,8 @@ search_one_skill/
 ├── assets/
 │   └── readme/
 │       ├── hero.svg
-│       └── workflow.svg
+│       ├── workflow.svg
+│       └── example.md
 └── README.md
 ```
 

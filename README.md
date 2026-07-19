@@ -37,6 +37,8 @@ User: 1
 Agent: SUCCESS: resume-builder 已安装 ✓
 ```
 
+→ [查看完整的多关键词搜索示例](./assets/readme/example.md)
+
 ## How it works
 
 Two Python scripts. Zero npm dependencies required.
@@ -81,7 +83,8 @@ search_one_skill/
 ├── assets/
 │   └── readme/
 │       ├── hero.svg
-│       └── workflow.svg
+│       ├── workflow.svg
+│       └── example.md
 └── README.md
 ```
 
