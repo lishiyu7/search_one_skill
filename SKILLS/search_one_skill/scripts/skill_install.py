@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-双源 Skill 安装：GitHub (git clone / ZIP fallback) + SkillHub CLI。
+安装最满足你需求的 skill：双源支持 GitHub (git clone / ZIP fallback) + SkillHub CLI。
 
 用法:
     python skill_install.py <name> --dir <skills_dir> \\
@@ -239,7 +239,7 @@ def _try_skillhub_install(
 
 def main():
     parser = argparse.ArgumentParser(
-        description="双源 Skill 安装（GitHub + SkillHub）"
+        description="安装最满足你需求的 skill（GitHub + SkillHub）"
     )
     parser.add_argument("name", help="Skill 名称")
     parser.add_argument(

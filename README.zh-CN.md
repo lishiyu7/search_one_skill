@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-  <img src="./assets/readme/hero.svg" width="100%" alt="search_one_skill — 在对话中直接搜索并安装 AI Agent 技能，支持 GitHub 和 SkillHub 双源">
+  <img src="./assets/readme/hero.svg" width="100%" alt="search_one_skill — 搜索并安装最满足你需求的 skill，支持 GitHub 和 SkillHub 双源">
 </p>
 
 在对话中一键搜索 Agent 技能，覆盖 GitHub 和 SkillHub 两个来源，再用一条命令完成安装。无需浏览器，无需复制粘贴，无需离开对话。
@@ -25,20 +25,20 @@ git clone https://github.com/lishiyu7/search_one_skill.git ~/.claude/skills/sear
 Agent 看到用户需求 → 双源搜索 → 用户选择 → 安装完成。
 
 ```
-用户：找个亚马逊广告运营的 skill
+用户：找个写简历的 skill
 
 Agent：（翻译 → 搜索 → 返回 TOP 5）
 
        | # | Skill              | 推荐理由                            |
        |---|--------------------|----------------------------------|
-       | 1 | amazon-ad-analyst   | 广告诊断，SP/SD 分析，ACoS 异常识别 ⭐234 |
-       | 2 | amazon-inventory    | 库存补货测算，库销比+周转周期              |
+       | 1 | resume-builder     | 智能简历生成，多模板切换，ATS 友好排版 ⭐234 |
+       | 2 | cover-letter-writer | 求职信自动生成，基于职位描述个性化定制      |
 
-       最优推荐是 #1 amazon-ad-analyst。你想安装哪一个？
+       最优推荐是 #1 resume-builder。你想安装哪一个？
 
 用户：1
 
-Agent：SUCCESS: amazon-ad-analyst 已安装 ✓
+Agent：SUCCESS: resume-builder 已安装 ✓
 ```
 
 ## 工作原理

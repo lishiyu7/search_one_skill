@@ -1,11 +1,26 @@
 ---
-categories:
-  - "[[Skills]]"
-type:
-  - common
+name: search-one-skill
+description: Use when the user wants to find, search, or discover agent skills matching a task description — dual-source search across GitHub and SkillHub with guided installation
 ---
 
 # Skill 搜索与安装工作流
+
+## Overview
+
+双源 skill 发现与安装工作流：同时搜索 GitHub 和 SkillHub，按相关性排序取 TOP 5，用户确认后安装。核心原则：**先搜后装、用户确认、本地检查、翻译优先。**
+
+## When to Use
+
+**触发场景：**
+
+- 用户说"帮我找 X 的 skill""搜索/推荐 skill""有什么好用的 skill"
+- 用户描述了一个任务，需要匹配合适的 skill
+- 用户想发现尚未安装的能力
+
+**不适用场景：**
+
+- 用户已知确切 skill 名称，只想直接使用（非搜索行为）
+- 用户在创建/编辑 skill
 
 ## 工作流概览（2 步）
 
@@ -14,10 +29,10 @@ type:
 
 ## 双源架构
 
-| 来源 | 搜索方式 | 安装方式 | 认证 |
-|------|---------|---------|------|
-| GitHub | REST API（`topic:skill` + 关键词） | `git clone`，fallback ZIP 下载 | 匿名（60次/h），建议设 `GITHUB_TOKEN` |
-| SkillHub | CLI（`skillhub search`） | CLI（`skillhub install`） | 可选，未登录时静默跳过 |
+| 来源     | 搜索方式                           | 安装方式                       | 认证                                  |
+| -------- | ---------------------------------- | ------------------------------ | ------------------------------------- |
+| GitHub   | REST API（`topic:skill` + 关键词） | `git clone`，fallback ZIP 下载 | 匿名（60次/h），建议设 `GITHUB_TOKEN` |
+| SkillHub | CLI（`skillhub search`）           | CLI（`skillhub install`）      | 可选，未登录时静默跳过                |
 
 - 默认**同时搜索两个源**，合并归一化排序，取 TOP 5
 - SkillHub 不可用时静默降级为纯 GitHub 搜索
@@ -60,6 +75,7 @@ type:
 ```
 
 可选参数：
+
 - `--source github`：仅搜索 GitHub
 - `--source skillhub`：仅搜索 SkillHub
 - `--source all`：双源搜索（默认）
@@ -109,12 +125,12 @@ type:
 
 > 脚本执行出错或返回非零退出码时，**禁止**将原始错误信息直接展示给用户，需按以下规则处理：
 
-| 异常场景 | 判别方式 | 处理方式 | 输出示例 |
-|---------|---------|---------|---------|
-| GitHub 限流 | stderr 含 `RATE_LIMITED` | 告知用户设置 token | "GitHub API 请求次数已达上限（60次/小时）。设置环境变量 `GITHUB_TOKEN` 可提升至 5000 次/小时，或稍后重试。" |
-| 所有源均失败 | 退出码 2 或 stderr 含 `ALL_SOURCES_FAILED` | 告知用户稍后重试 | "搜索服务暂时不可用，请稍后再试。" |
-| 返回 0 条结果 | stdout 为 `[]` | 告知用户换描述重试 | "没有找到完全匹配的 skill，建议换个关键词或更简短的描述再试一次。" |
-| 脚本执行报错（其他） | 非零退出码 | 翻译为用户友好的中文提示 | "搜索服务遇到了一点问题，建议稍后重试。如持续出现，可反馈给 skill 作者。" |
+| 异常场景             | 判别方式                                   | 处理方式                 | 输出示例                                                                                                    |
+| -------------------- | ------------------------------------------ | ------------------------ | ----------------------------------------------------------------------------------------------------------- |
+| GitHub 限流          | stderr 含 `RATE_LIMITED`                   | 告知用户设置 token       | "GitHub API 请求次数已达上限（60次/小时）。设置环境变量 `GITHUB_TOKEN` 可提升至 5000 次/小时，或稍后重试。" |
+| 所有源均失败         | 退出码 2 或 stderr 含 `ALL_SOURCES_FAILED` | 告知用户稍后重试         | "搜索服务暂时不可用，请稍后再试。"                                                                          |
+| 返回 0 条结果        | stdout 为 `[]`                             | 告知用户换描述重试       | "没有找到完全匹配的 skill，建议换个关键词或更简短的描述再试一次。"                                          |
+| 脚本执行报错（其他） | 非零退出码                                 | 翻译为用户友好的中文提示 | "搜索服务遇到了一点问题，建议稍后重试。如持续出现，可反馈给 skill 作者。"                                   |
 
 ### 1.9 GitHub Token 配置
 
@@ -139,7 +155,7 @@ GitHub API 请求次数已达上限（匿名 60 次/小时）。
 当用户通过以下方式确认时，进入安装流程：
 
 - **说编号**：如 "1""第一个"
-- **说名称**：如 "装 amazon-operator-skill"
+- **说名称**：如 "装 resume-builder"
 - **说意图**：如 "安装""装这个""就它了""用这个"
 
 ### 2.2 本地检查
@@ -160,6 +176,7 @@ GitHub API 请求次数已达上限（匿名 60 次/小时）。
 ```
 
 安装策略：
+
 1. 尝试 `git clone --depth 1 <repo_url> <skills_dir>/<name>`
 2. 若 git 不可用，fallback 为 ZIP 下载（GitHub archive API）
 3. 安装完成后校验 `SKILL.md` 是否存在，不存在则清理并报错
@@ -172,81 +189,73 @@ GitHub API 请求次数已达上限（匿名 60 次/小时）。
 
 ### 2.4 安装结果
 
-| stdout 前缀 | 状态 | Agent 输出 |
-|------------|------|-----------|
-| `SUCCESS:` | 安装成功 | "{name} 已安装成功。要用这个来完成你的任务吗？" |
-| `ALREADY_INSTALLED:` | 已安装（本地 SKILL.md 已存在） | "该 skill 已安装，无需重复安装，是否直接运行？" |
-| `ERROR:` | 安装失败 | "{name} 安装失败，原因：{描述}。建议稍后重试，或换一个 skill 试试。" |
+| stdout 前缀          | 状态                           | Agent 输出                                                           |
+| -------------------- | ------------------------------ | -------------------------------------------------------------------- |
+| `SUCCESS:`           | 安装成功                       | "{name} 已安装成功。要用这个来完成你的任务吗？"                      |
+| `ALREADY_INSTALLED:` | 已安装（本地 SKILL.md 已存在） | "该 skill 已安装，无需重复安装，是否直接运行？"                      |
+| `ERROR:`             | 安装失败                       | "{name} 安装失败，原因：{描述}。建议稍后重试，或换一个 skill 试试。" |
 
 ---
 
 ## 核心工具
 
-| 命令 | 用途 |
-|------|------|
-| `skill_search.py` | 双源检索 skill（GitHub API + SkillHub CLI） |
+| 命令               | 用途                                           |
+| ------------------ | ---------------------------------------------- |
+| `skill_search.py`  | 双源检索 skill（GitHub API + SkillHub CLI）    |
 | `skill_install.py` | 双源安装 skill（git clone/ZIP + SkillHub CLI） |
 
 ---
 
 ## 完整使用示例
 
-以下是一个完整的端到端交互示例，展示从搜索到安装的全流程。
+**用户**：找个写简历的 skill
 
-**用户**：找个亚马逊广告运营的 skill
-
-**Agent 内部**：翻译为英文关键词 "Amazon advertising operations"，识别 Agent 类型为 `claude`
+**Agent 内部**：翻译为 "resume builder"，识别 Agent 类型
 
 **Agent 执行**：
 
 ```bash
-python3 ~/.claude/skills/search_one_skill/scripts/skill_search.py "Amazon advertising operations" --agent-type claude
-```
-
-**脚本返回 JSON**：
-
-```json
-[
-  {
-    "name": "amazon-ad-analyst",
-    "source": "github",
-    "repo_url": "https://github.com/ad-ops/amazon-ad-analyst",
-    "description": "亚马逊广告诊断工具，支持 SP/SD 广告数据分析，自动识别 ACoS、点击率异常",
-    "score": 0.95,
-    "stars": 234
-  },
-  {
-    "name": "amazon-inventory-replenish",
-    "source": "skillhub",
-    "repo_url": null,
-    "description": "库存补货测算技能，基于销量、库销比、周转周期计算建议补货数量",
-    "score": 0.88,
-    "stars": null
-  }
-]
+python3 {skill_dir}/scripts/skill_search.py "resume builder" --agent-type claude
 ```
 
 **Agent 输出**：
 
 为你找到以下相关 skill：
 
-| # | Skill | 推荐理由 |
-|---|-------|---------|
-| 1 | amazon-ad-analyst | 亚马逊广告诊断工具，支持 SP/SD 广告数据分析，自动识别 ACoS、点击率异常 ⭐234 |
-| 2 | amazon-inventory-replenish | 库存补货测算技能，基于销量、库销比、周转周期计算建议补货数量 |
+| #   | Skill                      | 推荐理由                                                                     |
+| --- | -------------------------- | ---------------------------------------------------------------------------- |
+| 1   | resume-builder             | 智能简历生成工具，支持多模板切换、关键词优化、ATS 友好排版 ⭐234               |
+| 2   | cover-letter-writer        | 求职信自动生成技能，基于职位描述个性化定制内容                                |
 
-最优推荐是 #1 amazon-ad-analyst（亚马逊广告诊断工具，⭐234）。你想安装哪一个？告诉我编号或名字就行。
+最优推荐是 #1 resume-builder（智能简历生成工具，⭐234）。你想安装哪一个？告诉我编号或名字就行。
 
-**用户**：1
+**用户**：1 → Agent 确认本地未安装 → 执行安装
 
-**Agent 检查**：确认本地未安装 `amazon-ad-analyst`，来源为 `github`，执行安装。
+---
 
-**Agent 执行**：
+## Common Mistakes
 
-```bash
-python3 ~/.claude/skills/search_one_skill/scripts/skill_install.py amazon-ad-analyst \
-  --dir ~/.claude/skills --source github --repo-url https://github.com/ad-ops/amazon-ad-analyst
-```
+| 错误行为                       | 为什么会出现           | 正确做法                                                      |
+| ------------------------------ | ---------------------- | ------------------------------------------------------------- |
+| 跳过中文→英文翻译              | "脚本应该能处理中文"   | GitHub API 对英文最优，**始终翻译为英文关键词**再搜           |
+| 未经确认自动安装               | "最优推荐很明显"       | **始终等待用户明确选择**，不自动安装                          |
+| 未检查本地就安装               | "应该没装过"           | 始终先检查 `{skills_dir}/{name}/SKILL.md` 是否存在            |
+| 自行重新排序结果               | "我比脚本更懂用户需求" | 脚本已按 score 排序，**信任排序**，不要自行分析               |
+| 直接展示原始错误信息           | "用户应该看到完整错误" | 按异常处理表翻译为**用户友好的中文提示**                      |
+| 主动检查/要求设置 GITHUB_TOKEN | "提前配置更好"         | **仅在触发限流时**（退出码 2）才提示，日常使用 60 次/小时足够 |
+| 安装后不校验 SKILL.md          | "clone 成功就行"       | GitHub 源安装后**必须校验** SKILL.md 存在性，否则清理并报错   |
+
+## Red Flags - 自查清单
+
+以下想法出现时，**STOP 并回到规则**：
+
+- "这个中文描述够清楚了，不需要翻译" → 翻译为英文再搜
+- "就装第 1 个吧，不用问了" → 等用户确认
+- "SkillHub 挂了，我直接用 GitHub" → 可以，但告知用户
+- "这个 skill 肯定没装过" → 先检查本地
+- "脚本输出有点奇怪，我重新排个序" → 信任脚本排序
+- "我先帮用户检查下 GITHUB_TOKEN" → 仅在限流时提示
+- "clone 成功了，应该没问题" → 校验 SKILL.md
 
 ---
 

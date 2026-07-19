@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-双源 Skill 搜索：GitHub (topic:skill) + SkillHub CLI。
+搜索最满足你需求的 skill：双源检索 GitHub (topic:skill) + SkillHub CLI。
 
 用法:
     python skill_search.py "<英文关键词>" [--agent-type <type>] [--source all|github|skillhub] [--limit 5]
@@ -234,7 +234,7 @@ def merge_and_sort(
 
 def main():
     parser = argparse.ArgumentParser(
-        description="双源 Skill 搜索（GitHub + SkillHub）"
+        description="搜索最满足你需求的 skill（GitHub + SkillHub）"
     )
     parser.add_argument(
         "query",
