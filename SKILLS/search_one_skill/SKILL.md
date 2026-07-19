@@ -7,7 +7,7 @@ description: Use when the user wants to find, search, or discover agent skills m
 
 ## Overview
 
-双源 skill 发现与安装工作流：同时搜索 GitHub 和 SkillHub，按相关性排序取 TOP 5，用户确认后安装。核心原则：**先搜后装、用户确认、本地检查、翻译优先。**
+双源 skill 发现与安装工作流：同时搜索 GitHub 和 SkillHub，按相关性排序取 TOP 5，用户确认后安装。核心原则：**多关键词覆盖、先搜后装、用户确认、本地检查、翻译优先。**
 
 ## When to Use
 
@@ -24,7 +24,7 @@ description: Use when the user wants to find, search, or discover agent skills m
 
 ## 工作流概览（2 步）
 
-1. **Skill 检索**：按用户任务描述，双源搜索（GitHub + SkillHub）匹配的 skill
+1. **Skill 检索**：按用户任务描述，翻译为英文后发散 2-3 组关键词变体，双源搜索（GitHub + SkillHub）匹配的 skill，合并去重取 TOP 5
 2. **决策 + 下载安装**：用户确认选择后，按来源执行安装
 
 ## 双源架构
@@ -50,11 +50,20 @@ description: Use when the user wants to find, search, or discover agent skills m
   - 如有则基于上下文发起检索
   - 如无则追问用户想找什么方向的 skill
 
-### 1.2 中文 → 英文翻译
+### 1.2 中文 → 英文翻译 + 关键词发散
 
-用户使用中文描述时，**使用大模型翻译为英文关键词**再传给搜索脚本。GitHub API 对中文支持有限，英文关键词能获得更精准的搜索结果。
+用户使用中文描述时，**使用大模型翻译为 2-3 组英文关键词变体**，覆盖不同角度和近义词，避免单关键词遗漏。
 
-> 翻译在 Agent 层完成，搜索脚本接收英文关键词作为参数。
+**为什么需要多关键词？** GitHub 搜索依赖文本匹配（仓库名、描述、README）。同义词和不同表述方式会命中完全不同的仓库。例如：
+- `"resume builder"` 搜不到 `resume-jd-optimizer-cn`（用了 "optimizer" 而非 "builder"）
+- `"resume optimizer"` 就能搜到
+
+**关键词发散规则：**
+1. 将中文描述翻译为 1 组核心英文关键词
+2. **至少再发散 1-2 组变体**，考虑：近义词替换（builder → optimizer/ generator / writer）、功能侧重切换（编辑 → 优化 / 匹配 / 评分）、场景补充（通用 → Chinese / ATS / JD-driven）
+3. 关键词保持简洁（2-4 个单词），不做长句查询
+
+> 翻译和发散在 Agent 层完成，搜索脚本接收英文关键词作为参数。
 
 ### 1.3 Agent 类型识别
 
@@ -68,11 +77,23 @@ description: Use when the user wants to find, search, or discover agent skills m
 
 > 若确实无法识别，可省略该参数。SkillHub 支持以下 platform：`claude`、`codex`、`cursor`、`gemini-cli`、`windsurf`、`openhands`。不在此列表内的值将被忽略。
 
-### 1.4 调用检索脚本
+### 1.4 调用检索脚本（多关键词）
+
+**对每组关键词变体分别调用搜索脚本：**
 
 ```bash
-{python} {skill_dir}/scripts/skill_search.py "<英文关键词>" --agent-type <Agent类型>
+{python} {skill_dir}/scripts/skill_search.py "<关键词变体1>" --agent-type <Agent类型> --limit 5
+{python} {skill_dir}/scripts/skill_search.py "<关键词变体2>" --agent-type <Agent类型> --limit 5
+{python} {skill_dir}/scripts/skill_search.py "<关键词变体3>" --agent-type <Agent类型> --limit 5
 ```
+
+> 可并行执行（互不依赖），提升搜索速度。
+
+**合并与去重规则：**
+
+1. 合并所有变体的搜索结果，按 `name` 去重（保留 score 最高的）
+2. 按 score 重新降序排列
+3. 取 TOP 5 作为最终结果
 
 可选参数：
 
@@ -210,13 +231,17 @@ GitHub API 请求次数已达上限（匿名 60 次/小时）。
 
 **用户**：找个写简历的 skill
 
-**Agent 内部**：翻译为 "resume builder"，识别 Agent 类型
+**Agent 内部**：翻译+发散为 3 组关键词变体 → `"resume builder"`、`"resume optimizer chinese"`、`"cv generator"`，识别 Agent 类型
 
-**Agent 执行**：
+**Agent 执行**（并行）：
 
 ```bash
 python3 {skill_dir}/scripts/skill_search.py "resume builder" --agent-type claude
+python3 {skill_dir}/scripts/skill_search.py "resume optimizer chinese" --agent-type claude
+python3 {skill_dir}/scripts/skill_search.py "cv generator" --agent-type claude
 ```
+
+合并去重后，按 score 降序取 TOP 5。
 
 **Agent 输出**：
 
@@ -224,10 +249,10 @@ python3 {skill_dir}/scripts/skill_search.py "resume builder" --agent-type claude
 
 | #   | Skill                      | 推荐理由                                                                     |
 | --- | -------------------------- | ---------------------------------------------------------------------------- |
-| 1   | resume-builder             | 智能简历生成工具，支持多模板切换、关键词优化、ATS 友好排版 ⭐234               |
-| 2   | cover-letter-writer        | 求职信自动生成技能，基于职位描述个性化定制内容                                |
+| 1   | resume-jd-optimizer-cn     | JD 驱动的中文简历优化，解析岗位 JD、诊断简历缺口、ATS 友好 ⭐135               |
+| 2   | resume-builder-skill       | 基于工作轨迹智能提取核心能力，一键生成专业简历 ⭐6                              |
 
-最优推荐是 #1 resume-builder（智能简历生成工具，⭐234）。你想安装哪一个？告诉我编号或名字就行。
+最优推荐是 #1 resume-jd-optimizer-cn（JD 驱动中文简历优化，⭐135）。你想安装哪一个？告诉我编号或名字就行。
 
 **用户**：1 → Agent 确认本地未安装 → 执行安装
 
@@ -238,6 +263,7 @@ python3 {skill_dir}/scripts/skill_search.py "resume builder" --agent-type claude
 | 错误行为                       | 为什么会出现           | 正确做法                                                      |
 | ------------------------------ | ---------------------- | ------------------------------------------------------------- |
 | 跳过中文→英文翻译              | "脚本应该能处理中文"   | GitHub API 对英文最优，**始终翻译为英文关键词**再搜           |
+| 只生成一组关键词               | "翻译一个就够了"       | **至少生成 2-3 组关键词变体**，覆盖近义词和不同表述角度       |
 | 未经确认自动安装               | "最优推荐很明显"       | **始终等待用户明确选择**，不自动安装                          |
 | 未检查本地就安装               | "应该没装过"           | 始终先检查 `{skills_dir}/{name}/SKILL.md` 是否存在            |
 | 自行重新排序结果               | "我比脚本更懂用户需求" | 脚本已按 score 排序，**信任排序**，不要自行分析               |
@@ -250,6 +276,7 @@ python3 {skill_dir}/scripts/skill_search.py "resume builder" --agent-type claude
 以下想法出现时，**STOP 并回到规则**：
 
 - "这个中文描述够清楚了，不需要翻译" → 翻译为英文再搜
+- "翻译一组关键词就够了" → 至少 2-3 组变体，覆盖近义词
 - "就装第 1 个吧，不用问了" → 等用户确认
 - "SkillHub 挂了，我直接用 GitHub" → 可以，但告知用户
 - "这个 skill 肯定没装过" → 先检查本地
@@ -261,9 +288,10 @@ python3 {skill_dir}/scripts/skill_search.py "resume builder" --agent-type claude
 
 ## 注意事项
 
-1. **本地优先**：安装前须确认本地是否已安装该 skill，避免重复下载
-2. **安装确认**：需等用户选择后才安装，**不自动安装**
-3. **CN→EN 翻译**：调用搜索脚本前，先由大模型将用户中文描述翻译为英文关键词
-4. **GitHub 目录名**：安装到 `{skills_dir}/{仓库名}/`，不做重命名
-5. **安装校验**：GitHub 源安装后须校验 SKILL.md 存在性，无效则自动清理
-6. **SkillHub 可选**：SkillHub CLI 不可用或未认证时静默跳过，不影响 GitHub 搜索
+1. **多关键词覆盖**：中文→英文翻译后必须发散 2-3 组关键词变体，覆盖近义词和不同角度
+2. **本地优先**：安装前须确认本地是否已安装该 skill，避免重复下载
+3. **安装确认**：需等用户选择后才安装，**不自动安装**
+4. **CN→EN 翻译**：调用搜索脚本前，先由大模型将用户中文描述翻译为英文关键词
+5. **GitHub 目录名**：安装到 `{skills_dir}/{仓库名}/`，不做重命名
+6. **安装校验**：GitHub 源安装后须校验 SKILL.md 存在性，无效则自动清理
+7. **SkillHub 可选**：SkillHub CLI 不可用或未认证时静默跳过，不影响 GitHub 搜索

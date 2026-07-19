@@ -172,8 +172,7 @@ def _try_skillhub_cmd(
 ) -> list[dict] | None:
     """尝试执行 SkillHub CLI，成功返回结果列表，失败返回 None。"""
     cmd = [*base_cmd, "search", query, "--json", "--limit", str(limit)]
-    if agent_type:
-        cmd.extend(["--platform", agent_type])
+    # SkillHub search 不支持 --platform 过滤，agent_type 仅用于 install 时指定目标
 
     try:
         result = subprocess.run(
@@ -189,25 +188,31 @@ def _try_skillhub_cmd(
     ):
         return None
 
-    items = data if isinstance(data, list) else data.get("data", data.get("results", []))
+    items = data if isinstance(data, list) else data.get("items", data.get("data", data.get("results", [])))
     if not isinstance(items, list):
         return None
 
     results = []
     for item in items:
+        # SkillHub 字段名：slug/name, summary/description
+        name = item.get("slug") or item.get("name", "")
+        desc = item.get("summary") or item.get("description") or ""
         raw_score = item.get("score", item.get("relevance", 0))
         try:
             raw_score = float(raw_score)
         except (TypeError, ValueError):
             raw_score = 0.0
-        # SkillHub 分数可能是 0-100，归一化到 0-1
+        # SkillHub 分数可能是 0-100，归一化到 0-1；若为 0 则用默认中位分
         if raw_score > 1:
             raw_score = raw_score / 100.0
+        # SkillHub 搜索结果无 score 字段时，给予中等默认分以便与 GitHub 结果混合排序
+        if raw_score == 0.0:
+            raw_score = 0.5
         results.append({
-            "name": item.get("name", ""),
+            "name": name,
             "source": "skillhub",
             "repo_url": None,
-            "description": item.get("description") or "",
+            "description": desc,
             "stars": None,
             "score": round(raw_score, 4),
         })
