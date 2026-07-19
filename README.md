@@ -20,24 +20,22 @@ Requires Python 3.9+. SkillHub CLI and `GITHUB_TOKEN` are optional.
 
 Agent sees a user asking for a skill → searches both sources → user picks → installs.
 
-```
-User: 找个写简历的 skill
+> User: find a resume skill
 
-Agent: (translates → searches → returns TOP 5)
+> Agent: (translates → searches → returns TOP 5 recommended skills)
 
-       | # | Skill              | 推荐理由                            |
-       |---|--------------------|----------------------------------|
-       | 1 | resume-builder     | 智能简历生成，多模板切换，ATS 友好排版 ⭐234 |
-       | 2 | cover-letter-writer | 求职信自动生成，基于职位描述个性化定制      |
+| #   | Skill               | Reason                                                                               |
+| --- | ------------------- | ------------------------------------------------------------------------------------ |
+| 1   | resume-builder      | Intelligent resume generation, multi-template support, ATS-friendly formatting ⭐234 |
+| 2   | cover-letter-writer | Auto-generate personalized cover letters based on job descriptions                   |
 
-       最优推荐是 #1 resume-builder。你想安装哪一个？
+> Agent: Best match: #1 resume-builder. Which one would you like to install?
 
-User: 1
+> User: 1
 
-Agent: SUCCESS: resume-builder 已安装 ✓
-```
+> Agent: SUCCESS: resume-builder installed ✓
 
-→ [查看完整的多关键词搜索示例](./assets/readme/example.md)
+[view full example](./assets/readme/example.md)
 
 ## How it works
 

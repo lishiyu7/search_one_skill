@@ -24,22 +24,20 @@ git clone https://github.com/lishiyu7/search_one_skill.git ~/.claude/skills/sear
 
 Agent 看到用户需求 → 双源搜索 → 用户选择 → 安装完成。
 
-```
-用户：找个写简历的 skill
+> 用户：找个写简历的 skill
 
-Agent：（翻译 → 搜索 → 返回 TOP 5）
+> Agent：（翻译 → 搜索 → 返回 TOP 5）
 
-       | # | Skill              | 推荐理由                            |
-       |---|--------------------|----------------------------------|
-       | 1 | resume-builder     | 智能简历生成，多模板切换，ATS 友好排版 ⭐234 |
-       | 2 | cover-letter-writer | 求职信自动生成，基于职位描述个性化定制      |
+| #   | Skill               | 推荐理由                                     |
+| --- | ------------------- | -------------------------------------------- |
+| 1   | resume-builder      | 智能简历生成，多模板切换，ATS 友好排版 ⭐234 |
+| 2   | cover-letter-writer | 求职信自动生成，基于职位描述个性化定制       |
 
-       最优推荐是 #1 resume-builder。你想安装哪一个？
+最优推荐是 #1 resume-builder。你想安装哪一个？
 
-用户：1
+> 用户：1
 
-Agent：SUCCESS: resume-builder 已安装 ✓
-```
+> Agent：SUCCESS: resume-builder 已安装 ✓
 
 → [查看完整的多关键词搜索示例](./assets/readme/example.md)
 
@@ -47,10 +45,10 @@ Agent：SUCCESS: resume-builder 已安装 ✓
 
 两个 Python 脚本，零 npm 依赖。
 
-| 脚本 | 功能 | 数据源 |
-|--------|-------------|---------|
-| `skill_search.py` | 双源并行搜索，分数归一化，合并输出 TOP 5 JSON | GitHub REST API · SkillHub CLI |
-| `skill_install.py` | 按来源路由安装：GitHub 优先 git clone → ZIP 兜底，SkillHub 走 CLI | GitHub · SkillHub |
+| 脚本               | 功能                                                              | 数据源                         |
+| ------------------ | ----------------------------------------------------------------- | ------------------------------ |
+| `skill_search.py`  | 双源并行搜索，分数归一化，合并输出 TOP 5 JSON                     | GitHub REST API · SkillHub CLI |
+| `skill_install.py` | 按来源路由安装：GitHub 优先 git clone → ZIP 兜底，SkillHub 走 CLI | GitHub · SkillHub              |
 
 ### 搜索流程
 
@@ -69,12 +67,12 @@ GitHub 返回标记了 `topic:skill` 的 Star 排名仓库；SkillHub 通过 CLI
 
 ## 前置要求
 
-| 依赖 | 用途 | 是否必须 |
-|------------|-----|-----------|
-| Python 3.9+ | 运行脚本 | 必须 |
-| Git | GitHub 源安装更快 | 推荐（不可用时自动转 ZIP） |
-| SkillHub CLI（`npm install -g @astron-team/skillhub`）| SkillHub 源 | 可选 |
-| `GITHUB_TOKEN` 环境变量 | API 限额 5000 次/小时（匿名 60 次/小时）| 可选 |
+| 依赖                                                   | 用途                                     | 是否必须                   |
+| ------------------------------------------------------ | ---------------------------------------- | -------------------------- |
+| Python 3.9+                                            | 运行脚本                                 | 必须                       |
+| Git                                                    | GitHub 源安装更快                        | 推荐（不可用时自动转 ZIP） |
+| SkillHub CLI（`npm install -g @astron-team/skillhub`） | SkillHub 源                              | 可选                       |
+| `GITHUB_TOKEN` 环境变量                                | API 限额 5000 次/小时（匿名 60 次/小时） | 可选                       |
 
 ## 文件结构
 
